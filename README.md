@@ -22,6 +22,13 @@ cd /home/pugal/user-management-system
 docker compose up -d
 ```
 
+### Dev-only fallback (no MongoDB installed)
+
+If `MONGODB_URI` points to a local MongoDB (like `mongodb://localhost:27017/...`) and MongoDB is not running, the backend will **automatically fall back to an in-memory MongoDB** in development so you can run the app quickly.
+
+- This fallback is **disabled in production** (production requires a real `MONGODB_URI`, e.g., MongoDB Atlas).
+- Any data stored in the in-memory DB is **lost on backend restart**.
+
 ### 1) Backend
 
 ```bash
