@@ -6,7 +6,9 @@ export function validate({ body, query, params }) {
       if (params) req.params = params.parse(req.params);
       next();
     } catch (err) {
-      const message = err?.issues?.[0]?.message || "Validation error";
+      // Support Zod v3 (issues) and v4 (errors), fall back gracefully
+      const issues = err?.issues ?? err?.errors ?? [];
+      const message = issues[0]?.message || err?.message || "Validation error";
       next({ status: 400, code: "VALIDATION_ERROR", message });
     }
   };
