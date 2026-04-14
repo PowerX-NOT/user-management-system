@@ -1,0 +1,35 @@
+# env
+.env
+.env.*
+!.env.example
+
+# logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# node
+node_modules/
+
+# build outputs
+dist/
+build/
+coverage/
+
+# local db volumes / data
+data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# editor/ide
+.vscode/
+.idea/
+
+# vite / tooling
+.vite/
+
