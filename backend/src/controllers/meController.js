@@ -26,10 +26,15 @@ export const meController = {
 
   async update(req, res, next) {
     try {
-      const update = {};
-      if (req.body.name) update.name = req.body.name;
-      if (req.body.password) update.passwordHash = await hashPassword(req.body.password);
-      update.updatedBy = req.auth.userId;
+      const { name, password } = req.body;
+
+      if (!name && !password) {
+        return next({ status: 400, code: "VALIDATION_ERROR", message: "Provide at least one field to update" });
+      }
+
+      const update = { updatedBy: req.auth.userId };
+      if (name) update.name = name;
+      if (password) update.passwordHash = await hashPassword(password);
 
       const user = await User.findByIdAndUpdate(req.auth.userId, update, { new: true }).lean();
       if (!user) return next({ status: 404, code: "NOT_FOUND", message: "User not found" });
@@ -39,4 +44,3 @@ export const meController = {
     }
   },
 };
-
