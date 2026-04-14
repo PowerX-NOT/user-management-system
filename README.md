@@ -17,6 +17,12 @@ A production-ready, full-stack user management system built with **React + Expre
 
 ---
 
+## 🎥 Demo
+
+- [`demo/demo.mp4`](demo/demo.mp4)
+
+---
+
 ## 📁 Repository Layout
 
 ```
