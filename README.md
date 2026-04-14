@@ -273,7 +273,9 @@ npx serve dist
 
 ### Step 4 — Configure SPA Routing (Static Site)
 
-Render needs a rewrite rule so React Router works on page refresh:
+Render needs a rewrite rule so React Router works on page refresh (if you use `BrowserRouter`).
+
+This project uses **hash routing** (URLs like `/#/users`) which avoids 404s on refresh even without rewrites, but keeping the rewrite rule is still fine.
 
 1. In your Static Site settings → **Redirects/Rewrites**.
 2. Add a rule:
