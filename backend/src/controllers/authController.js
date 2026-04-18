@@ -5,14 +5,14 @@ export const authController = {
   async login(req, res, next) {
     try {
       const { email, password } = req.body;
-      const { accessToken, refreshToken } = await authService.login({
+      const { accessToken, refreshToken, user } = await authService.login({
         email,
         password,
         ip: req.ip,
         userAgent: req.get("user-agent") ?? null,
       });
       res.cookie(refreshCookieName(), refreshToken, refreshCookieOptions());
-      res.json({ accessToken });
+      res.json({ accessToken, user });
     } catch (err) {
       next(err);
     }
@@ -22,13 +22,13 @@ export const authController = {
     try {
       const token = req.cookies?.[refreshCookieName()];
       if (!token) return next({ status: 401, code: "UNAUTHORIZED", message: "Missing refresh token" });
-      const { accessToken, refreshToken } = await authService.refresh({
+      const { accessToken, refreshToken, user } = await authService.refresh({
         refreshToken: token,
         ip: req.ip,
         userAgent: req.get("user-agent") ?? null,
       });
       res.cookie(refreshCookieName(), refreshToken, refreshCookieOptions());
-      res.json({ accessToken });
+      res.json({ accessToken, user });
     } catch (err) {
       next(err);
     }

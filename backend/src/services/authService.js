@@ -3,6 +3,7 @@ import { RefreshToken } from "../models/RefreshToken.js";
 import { verifyPassword } from "../utils/password.js";
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../utils/jwt.js";
 import { sha256 } from "../utils/crypto.js";
+import { toPublicUser } from "../utils/userPublic.js";
 
 function unauthorized() {
   return { status: 401, code: "UNAUTHORIZED", message: "Invalid credentials" };
@@ -29,7 +30,7 @@ export const authService = {
     await refreshRecord.save();
 
     const accessToken = signAccessToken({ userId: user._id, role: user.role });
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, user: toPublicUser(user) };
   },
 
   async refresh({ refreshToken, ip, userAgent }) {
@@ -70,7 +71,7 @@ export const authService = {
     await nextRecord.save();
 
     const accessToken = signAccessToken({ userId: user._id, role: user.role });
-    return { accessToken, refreshToken: nextRefreshToken };
+    return { accessToken, refreshToken: nextRefreshToken, user: toPublicUser(user) };
   },
 
   async logout({ refreshToken }) {

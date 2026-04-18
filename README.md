@@ -309,8 +309,8 @@ The refresh token is stored in an `httpOnly` cookie. In production (cross-site s
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `POST` | `/api/auth/login` | ❌ | Login — returns `accessToken`, sets refresh cookie |
-| `POST` | `/api/auth/refresh` | ❌ | Refresh access token using httpOnly cookie |
+| `POST` | `/api/auth/login` | ❌ | Login — returns `accessToken` + `user`, sets refresh cookie |
+| `POST` | `/api/auth/refresh` | ❌ | Refresh access token + `user` using httpOnly cookie |
 | `POST` | `/api/auth/logout` | ❌ | Revoke refresh token, clear cookie |
 
 ### Me (own profile)

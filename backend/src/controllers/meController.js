@@ -1,17 +1,6 @@
 import { User } from "../models/User.js";
 import { hashPassword } from "../utils/password.js";
-
-function toPublicUser(u) {
-  return {
-    id: String(u._id),
-    name: u.name,
-    email: u.email,
-    role: u.role,
-    status: u.status,
-    createdAt: u.createdAt,
-    updatedAt: u.updatedAt,
-  };
-}
+import { toPublicUser } from "../utils/userPublic.js";
 
 export const meController = {
   async get(req, res, next) {

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import { api } from "../utils/api.js";
 
@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [status, setStatus] = useState("loading"); // loading | anonymous | authenticated
   const [accessToken, setAccessToken] = useState(null);
   const [user, setUser] = useState(null);
+  const initStartedRef = useRef(false);
 
   async function loadMe(token) {
     const res = await api.get("/api/me", { accessToken: token });
@@ -19,6 +20,11 @@ export function AuthProvider({ children }) {
     try {
       const res = await api.post("/api/auth/refresh", null, { accessToken: null });
       setAccessToken(res.accessToken);
+      if (res.user) {
+        setUser(res.user);
+        setStatus("authenticated");
+        return;
+      }
       await loadMe(res.accessToken);
     } catch {
       setAccessToken(null);
@@ -28,6 +34,8 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
+    if (initStartedRef.current) return;
+    initStartedRef.current = true;
     refresh();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -40,6 +48,11 @@ export function AuthProvider({ children }) {
       async login({ email, password }) {
         const res = await api.post("/api/auth/login", { email, password }, { accessToken: null });
         setAccessToken(res.accessToken);
+        if (res.user) {
+          setUser(res.user);
+          setStatus("authenticated");
+          return;
+        }
         await loadMe(res.accessToken);
       },
       async logout() {
@@ -60,6 +73,7 @@ export function AuthProvider({ children }) {
         try {
           const r = await api.post("/api/auth/refresh", null, { accessToken: null });
           setAccessToken(r.accessToken);
+          if (r.user) setUser(r.user);
           return r.accessToken;
         } catch {
           setAccessToken(null);

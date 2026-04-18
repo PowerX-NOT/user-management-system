@@ -2,16 +2,11 @@ import crypto from "crypto";
 
 import { User } from "../models/User.js";
 import { hashPassword } from "../utils/password.js";
+import { toPublicUser as toPublicUserBase } from "../utils/userPublic.js";
 
-function toPublicUser(u) {
+function toPublicUserWithAudit(u) {
   return {
-    id: String(u._id),
-    name: u.name,
-    email: u.email,
-    role: u.role,
-    status: u.status,
-    createdAt: u.createdAt,
-    updatedAt: u.updatedAt,
+    ...toPublicUserBase(u),
     createdBy: u.createdBy
       ? {
           id: String(u.createdBy._id ?? u.createdBy),
@@ -95,15 +90,7 @@ export const userService = {
     });
 
     return {
-      user: {
-        id: String(created._id),
-        name: created.name,
-        email: created.email,
-        role: created.role,
-        status: created.status,
-        createdAt: created.createdAt,
-        updatedAt: created.updatedAt,
-      },
+      user: toPublicUserBase(created),
       initialPassword: plainPassword, // shown once
     };
   },
@@ -115,7 +102,7 @@ export const userService = {
       .select("-passwordHash")
       .lean();
     if (!user || user.deletedAt) throw { status: 404, code: "NOT_FOUND", message: "User not found" };
-    return { user: toPublicUser(user) };
+    return { user: toPublicUserWithAudit(user) };
   },
 
   async updateUser({ auth, id, input }) {
@@ -146,7 +133,7 @@ export const userService = {
       .populate("updatedBy", "name email")
       .select("-passwordHash")
       .lean();
-    return { user: toPublicUser(user) };
+    return { user: toPublicUserWithAudit(user) };
   },
 
   async deleteUser({ id }) {
